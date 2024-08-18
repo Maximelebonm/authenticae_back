@@ -1,0 +1,10 @@
+Post http://localhost:4000/shop/create
+Content-Type : application/json
+
+{
+        "name" : "doucrochet",
+        "description" : "doudou en crochet",
+        "phone" : "060606",
+        "created_by" : "admin",
+        "Id_user" : "e2b50cbe-be91-4c8b-bf6f-5eea297d1ab8"
+}

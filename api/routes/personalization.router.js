@@ -1,0 +1,16 @@
+const express = require('express');
+const router = express.Router();
+const protect = require('../middlewares/auth.middleware');
+const config = require('../configs/app.config');
+const upload = require('../configs/multer.config');
+const path = require('path')
+
+const personalizationController = require("../controllers/personalization.controller")
+
+// router.get("/");
+// router.get("/:id");
+// router.post("/create/:id", protect)
+router.delete("/delete/:id", protect, personalizationController.deletePersonalization)
+// router.put("/update/:id");
+
+module.exports = router
