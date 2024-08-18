@@ -6,7 +6,7 @@ const passport = require('passport')
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const config = require('../configs/app.config');
 const { jwtsecurity, decodeToken,jwtCart } = require('../security/auth.security');
-
+const googleConfig = require('../configs/google.config')
 
 router.get("/", userController.findAllUser);
 
@@ -30,7 +30,7 @@ router.post('/pseudo/:id', protect, userController.createPseudo)
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLEID_CLIENT,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `http://localhost:4000/users/google/callback`
+    callbackURL: googleConfig
   },
   async function(request,accessToken, refreshToken, profile, cb) {
     const googleChecked = await userController.checkGoogleUser(profile)
