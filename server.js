@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const session = require('express-session');
 const path = require('path');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use(session({
     saveUninitialized : true,
     cookie: { secure: true },
 }))
+
+
 
 app.use(passport.initialize());
 app.use(passport.session())
@@ -39,7 +43,7 @@ console.log(process.env.PORT)
 app.use(cookieParser());
 app.use(express.json());
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 5000
 
 const routes = require('./api/routes/index.router');
 const script = require('./api/script/index.script');
@@ -47,6 +51,18 @@ script()
 
 app.use(routes)
 
-app.listen(port, () => 
-    {  console.log("Serveur à l'écoute au port : " , port)
-})
+if (config.SSL) {
+    // Serveur HTTPS en production
+    const privateKey = fs.readFileSync(config.SSL_KEY, 'utf8');
+    const certificate = fs.readFileSync(config.SSL_CERT, 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+
+    https.createServer(credentials, app).listen(config.PORT, () => {
+        console.log(`Serveur HTTPS en production à l'écoute sur le port ${config.PORT}`);
+    }); 
+    } else {
+
+        app.listen(port, () => 
+            {  console.log("Serveur à l'écoute au port : " , port)
+        })
+    }

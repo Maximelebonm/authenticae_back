@@ -9,9 +9,9 @@ const optioncontroller = require("../controllers/option.controller")
 
 router.get("/");
 router.get("/:id");
-router.post("/create/:id", protect)
-router.delete("/suboption/delete/:id", protect, optioncontroller.deleteSubOption)
-router.delete("/delete/:id", protect, optioncontroller.deleteOption)
+router.post("/create/:id", protect);
+router.delete("/suboption/delete/:id", protect, optioncontroller.deleteSubOption);
+router.delete("/delete/:id", protect, optioncontroller.deleteOption);
 router.put("/update/:id");
 
 module.exports = router

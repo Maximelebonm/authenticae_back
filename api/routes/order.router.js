@@ -5,7 +5,7 @@ const protect = require('../middlewares/auth.middleware');
 const stripeClient = require('../configs/stripe.config')
 const orderController = require('../controllers/order.controller')
 const db = require('../configs/db.config');
-
+const config = require('../configs/app.config')
 router.get("/producer/:id" , orderController.getProducerOrder)
 router.get('/usercommands/:id', protect, orderController.getUserOrder);
 router.post('/producer/working_progress/:id', protect, orderController.cancelOrderInProgress);
@@ -223,7 +223,7 @@ router.post("/stripe/charge", protect, async (req, res) => {
           description: "authenticae payment",
           payment_method: id,
           confirm: true,
-          return_url: 'http://localhost:5173'
+          return_url: config.origin
       });
 
       const paymentIntentStatus = await stripeClient.paymentIntents.retrieve(payment.id);
