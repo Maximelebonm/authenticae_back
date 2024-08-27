@@ -50,14 +50,14 @@ const tvaSchema = db.define(
     }
     
     )
-async function tableSync(){
-    try {
-        await db.sync();
-       // console.log('Table tva Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//        // console.log('Table tva Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = tvaSchema;

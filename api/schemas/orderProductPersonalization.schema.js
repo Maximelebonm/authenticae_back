@@ -48,14 +48,14 @@ const orderProductPersonalization = db.define('orderproductpersonalization',{
 }
 );
 
-async function tableSync(){
-    try {
-        await db.sync();
-      //  console.log('Table Cart Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//       //  console.log('Table Cart Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = orderProductPersonalization;

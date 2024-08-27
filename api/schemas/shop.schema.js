@@ -68,13 +68,13 @@ shopSchema.belongsTo(userSchema,{
     foreignKey : 'Id_user',
 })
 
-async function tableSync(){
-    try {
-        await db.sync();
-        //console.log('Table User Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
-tableSync()
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//         //console.log('Table User Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
+// tableSync()
 module.exports = shopSchema;

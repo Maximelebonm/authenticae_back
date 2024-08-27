@@ -87,14 +87,14 @@ const productSchema = db.define(
     }
 )
 
-async function tableSync(){
-    try {
-        await db.sync();
-       // console.log('Table Product Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//        // console.log('Table Product Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = productSchema;

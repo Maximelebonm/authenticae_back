@@ -49,14 +49,14 @@ const categoryProductSchema = db.define(
         tableName : "categoryProduct",
     }
     )
-async function tableSync(){
-    try {
-        await db.sync();
-      //  console.log('Table CategoryProduct Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//       //  console.log('Table CategoryProduct Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = categoryProductSchema;

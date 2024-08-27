@@ -63,14 +63,14 @@ const addressSchema = db.define(
         tableName : "address",
     }
     )
-async function tableSync(){
-    try {
-        await db.sync();
-      //  console.log('Table Adress Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//       //  console.log('Table Adress Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = addressSchema;

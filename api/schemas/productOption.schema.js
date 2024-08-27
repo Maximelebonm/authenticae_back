@@ -49,17 +49,17 @@ const productOptionSchema = db.define(
         tableName : "productoption",
     }
     )
-async function tableSync(){
-    try {
-        await db.sync();
-       // console.log('Table personalization Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//        // console.log('Table personalization Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
 
 
 
-tableSync()
+// tableSync()
 module.exports = productOptionSchema;

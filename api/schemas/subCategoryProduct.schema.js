@@ -57,14 +57,14 @@ subcategoryproductSchema.belongsTo(categoryProduct,{
 })
 
 
-async function tableSync(){
-    try {
-        await db.sync();
-       // console.log('Table subcat Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//        // console.log('Table subcat Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = subcategoryproductSchema;

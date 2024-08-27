@@ -51,14 +51,14 @@ const cart_product = db.define('cartproduct',{
 
 
 
-async function tableSync(){
-    try {
-        await db.sync();
-      //  console.log('Table Cart_product Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//       //  console.log('Table Cart_product Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = cart_product;

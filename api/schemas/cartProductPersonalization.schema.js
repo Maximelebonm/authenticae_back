@@ -51,14 +51,14 @@ const cart_product_personalization = db.define('cartproductpersonalization',{
 }
 );
 
-async function tableSync(){
-    try {
-        await db.sync();
-      //  console.log('Table Cart Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//       //  console.log('Table Cart Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
-tableSync()
+// tableSync()
 module.exports = cart_product_personalization;

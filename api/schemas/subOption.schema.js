@@ -56,16 +56,16 @@ const subOptionSchema = db.define(
         tableName : "subOption",
     }
     )
-async function tableSync(){
-    try {
-        await db.sync();
-       // console.log('Table personalization Synchronisé');
-    }catch (err){
-        console.log("erreur : " , err)
-    }
-}
+// async function tableSync(){
+//     try {
+//         await db.sync();
+//        // console.log('Table personalization Synchronisé');
+//     }catch (err){
+//         console.log("erreur : " , err)
+//     }
+// }
 
 subOptionSchema.belongsTo(optionSchema,{foreignKey : 'Id_product_option'})
 
-tableSync()
+// tableSync()
 module.exports = subOptionSchema;
