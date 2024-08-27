@@ -15,6 +15,7 @@ const jwtsecurity = (props) => {
     try {
         const {Id_user,email,roles,name,firstname,created_by,identifiant} =props
         const payload = {Id_user : Id_user, email : email, firstname : firstname,role : roles, created_by : created_by, identifiant : identifiant};
+        console.log('payload : ', payload)
         return jwt.sign(payload, process.env.JWT_SECRET)
         
     } catch (error) {
