@@ -81,6 +81,8 @@ const loginUser = async (req,res) => {
             const comparePassword = await security.comparePassword(req.body.password,findUser.password);
             if(comparePassword){
                 const accessToken = security.jwtsecurity(findUser)
+                console.log('findUser : ', findUser)
+                console.log('accessToken : ', accessToken)
                 res.cookie('auth', accessToken,{
                   maxAge : 864000000,
                   secure : true,
