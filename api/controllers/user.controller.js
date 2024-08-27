@@ -75,6 +75,7 @@ const emailValidation = async(req,res)=>{
 
 const loginUser = async (req,res) => {
     try {
+        console.log(req.body.email)
         const findUser = await userService.findOneUserByEmail(req.body.email);
         if(findUser){
             const comparePassword = await security.comparePassword(req.body.password,findUser.password);
