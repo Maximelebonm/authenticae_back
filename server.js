@@ -51,11 +51,11 @@ script()
 
 app.use(routes)
 
-if (config.SSL) {
+// if (config.SSL) {
     // Serveur HTTPS en production
-    const privateKey = fs.readFileSync(config.SSL_KEY, 'utf8');
-    const certificate = fs.readFileSync(config.SSL_CERT, 'utf8');
-    const credentials = { key: privateKey, cert: certificate };
+    // const privateKey = fs.readFileSync(config.SSL_KEY, 'utf8');
+    // const certificate = fs.readFileSync(config.SSL_CERT, 'utf8');
+    // const credentials = { key: privateKey, cert: certificate };
 
     // https.createServer(credentials, app).listen(config.PORT, () => {
     //     console.log(`Serveur HTTPS en production à l'écoute sur le port ${config.PORT}`);
@@ -63,9 +63,9 @@ if (config.SSL) {
     app.listen(port, () => 
         {  console.log("Serveur à l'écoute au port : " , port)
     })
-    } else {
+    // } else {
 
-        app.listen(port, () => 
-            {  console.log("Serveur à l'écoute au port : " , port)
-        })
-    }
+    //     app.listen(port, () => 
+    //         {  console.log("Serveur à l'écoute au port : " , port)
+    //     })
+    // }
