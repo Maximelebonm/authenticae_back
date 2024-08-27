@@ -17,6 +17,7 @@ ENV NODE_ENV production
 # Install pnpm.
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
+RUN npm install pm2 -g
 
 WORKDIR /usr/src/app
 
@@ -39,4 +40,4 @@ COPY . .
 EXPOSE 5000
 
 # Run the application.
-CMD pnpm start
+CMD pm2 start "pnpm start" --name 'authenticae-back'

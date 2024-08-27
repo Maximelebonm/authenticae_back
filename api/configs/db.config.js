@@ -10,7 +10,7 @@ if(process.env.NODE_ENV === "development"){
     })
 }   
 else {
-    db = new Sequelize("authenticae",process.env.DB_USER,process.env.DB_PASSWORD,{
+    db = new Sequelize("ud5ut3pau6pdq8rd",process.env.DB_USER,process.env.DB_PASSWORD,{
         host : process.env.DB_HOST,
         dialect : "mysql",
         logging: function () {},
