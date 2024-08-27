@@ -14,11 +14,11 @@ else {
         host : process.env.DB_HOST,
         dialect : "mysql",
         logging: function () {},
-        pool: {
-            max: 10,
-            min: 0,
-            idle: 10000
-        },
+        // pool: {
+        //     max: 10,
+        //     min: 0,
+        //     idle: 10000
+        // },
         // dialectOptions: {
         //     socketPath: "/var/run/mysqld/mysqld.sock"
         // },
