@@ -19,9 +19,9 @@ else {
             min: 0,
             idle: 10000
         },
-        dialectOptions: {
-            socketPath: "/var/run/mysqld/mysqld.sock"
-        },
+        // dialectOptions: {
+        //     socketPath: "/var/run/mysqld/mysqld.sock"
+        // },
     })
 }
 
