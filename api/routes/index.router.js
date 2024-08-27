@@ -16,16 +16,16 @@ const cartRoutes = require('./cart.router')
 const addressRoutes = require('./address.router')
 const orderRoutes = require('./order.router')
 
-router.use('/api/users', userRoutes);
-router.use('/api/script', scriptRoutes);
-router.use('/api/shop', shopRoutes);
-router.use('/api/admin', adminRoutes);
-router.use('/api/product', productRoutes)
-router.use('/api/material', materialRoutes)
-router.use('/api/option', optionRoutes)
-router.use('/api/personalization', personalizationRoutes)
-router.use('/api/cart', cartRoutes)
-router.use('/api/address', addressRoutes)
-router.use('/api/order' , orderRoutes)
+router.use('/users', userRoutes);
+router.use('/script', scriptRoutes);
+router.use('/shop', shopRoutes);
+router.use('/admin', adminRoutes);
+router.use('/product', productRoutes)
+router.use('/material', materialRoutes)
+router.use('/option', optionRoutes)
+router.use('/personalization', personalizationRoutes)
+router.use('/cart', cartRoutes)
+router.use('/address', addressRoutes)
+router.use('/order' , orderRoutes)
 
 module.exports = router
