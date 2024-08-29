@@ -84,11 +84,11 @@ const loginUser = async (req,res) => {
                 // console.log('findUser : ', findUser)
                 // console.log('accessToken : ', accessToken)
                 res.cookie('auth', accessToken,{
-                  maxAge : 864000000,
-                  secure : true,
-                  sameSite:'none',
-                  path: '/',
-                //   domain: 'authenticae.fr'
+                    domain: 'authenticae.fr',
+                    path: '/',
+                    sameSite:'none',
+                    secure : true,
+                    maxAge : 864000000,
                 })
                 res.status(200).send({message : 'connection autorisé'});
             }
