@@ -87,6 +87,7 @@ const loginUser = async (req,res) => {
                   maxAge : 864000000,
                   secure : true,
                   sameSite:'none',
+                  domain: 'authenticae.fr'
                 })
                 res.status(200).send({message : 'connection autorisé'});
             }
