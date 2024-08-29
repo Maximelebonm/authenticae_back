@@ -28,9 +28,12 @@ const createPseudo = async (req,res) => {
         const accessToken = security.jwtsecurity(findNewUser)
         res.clearCookie('auth');
         res.cookie('auth', accessToken,{
-          maxAge : 864000000,
-          secure : true,
-          sameSite:'none',
+            domain: '.authenticae.fr',
+            path: '/',
+            sameSite:'none',
+            secure : true,
+            httpOnly: false,
+            maxAge : 864000000,
         }).send({message : 'pseudo created'})
     } catch (err) {
         return err
@@ -45,6 +48,7 @@ const findUserByID = async (req,res)=>{
         } else {
             const response = await userService.findOneUserByID(req.params.id)
             if(response){
+                console.log("pass ici")
                 res.status(200).send(response)
             } else {
                 res.status(404).send({message : "utilisateur n'existe pas", data : response})
