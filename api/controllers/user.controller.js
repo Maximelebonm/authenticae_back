@@ -84,7 +84,7 @@ const loginUser = async (req,res) => {
                 // console.log('findUser : ', findUser)
                 // console.log('accessToken : ', accessToken)
                 res.cookie('__Secure-auth', accessToken,{
-                    domain: 'authenticae.fr',
+                    // domain: 'authenticae.fr',
                     path: '/',
                     sameSite:'none',
                     secure : true,
