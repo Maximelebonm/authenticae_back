@@ -88,7 +88,7 @@ const loginUser = async (req,res) => {
                   path: '/',
                   domain: 'authenticae.fr',
                   secure : true,
-                //   sameSite:'none',
+                  sameSite:'none',
                 })
                 res.status(200).send({message : 'connection autorisé'});
             }
