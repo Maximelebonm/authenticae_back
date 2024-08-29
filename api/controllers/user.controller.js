@@ -86,8 +86,8 @@ const loginUser = async (req,res) => {
                 res.cookie('auth', accessToken,{
                   maxAge : 864000000,
                   path: '/',
-                  domain: 'authenticae.fr'
-                //   secure : true,
+                  domain: 'authenticae.fr',
+                  secure : true,
                 //   sameSite:'none',
                 })
                 res.status(200).send({message : 'connection autorisé'});
