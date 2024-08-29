@@ -83,11 +83,12 @@ const loginUser = async (req,res) => {
                 const accessToken = security.jwtsecurity(findUser)
                 // console.log('findUser : ', findUser)
                 // console.log('accessToken : ', accessToken)
-                res.cookie('__Secure-auth', accessToken,{
-                    // domain: 'authenticae.fr',
+                res.cookie('auth', accessToken,{
+                    domain: 'authenticae.fr',
                     path: '/',
                     sameSite:'none',
                     secure : true,
+                    httpOnly: false,
                     maxAge : 864000000,
                 })
                 res.status(200).send({message : 'connection autorisé'});
