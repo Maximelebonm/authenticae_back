@@ -10,10 +10,10 @@ if(process.env.NODE_ENV === "development"){
     }
 } else {
     config = {
-    PORT : 5000,
+    PORT : process.env.PORT || 5000,
     origin : process.env.ORIGIN_PROD,
     credentials : true,
-    SSL: true, 
+    // SSL: true, 
     methods : "GET,POST,PUT,DELETE",
     // SSL_KEY: process.env.SSL_KEY || '/etc/letsencrypt/live/authenticae.fr/privkey.pem',
     // SSL_CERT: process.env.SSL_CERT || '/etc/letsencrypt/live/authenticae.fr/fullchain.pem'
