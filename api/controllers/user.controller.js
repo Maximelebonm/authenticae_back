@@ -48,7 +48,7 @@ const findUserByID = async (req,res)=>{
         } else {
             const response = await userService.findOneUserByID(req.params.id)
             if(response){
-                console.log("pass ici")
+                console.log("pass ici : " + response)
                 res.status(200).send(response)
             } else {
                 res.status(404).send({message : "utilisateur n'existe pas", data : response})
