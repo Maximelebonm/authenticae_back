@@ -83,8 +83,8 @@ const loginUser = async (req,res) => {
                 const accessToken = security.jwtsecurity(findUser)
                 // console.log('findUser : ', findUser)
                 // console.log('accessToken : ', accessToken)
-                res.cookie('auth', accessToken,{
-                    domain: 'authenticae.fr',
+                res.cookie('__Secure-auth', accessToken,{
+                    domain: '.authenticae.fr',
                     path: '/',
                     sameSite:'none',
                     secure : true,
