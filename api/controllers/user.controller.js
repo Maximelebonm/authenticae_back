@@ -86,7 +86,7 @@ const loginUser = async (req,res) => {
                 res.cookie('auth', accessToken,{
                   maxAge : 864000000,
                   secure : true,
-                  sameSite:'none',
+                  sameSite: 'Lax',
                 })
                 res.status(200).send({message : 'connection autorisé'});
             }
