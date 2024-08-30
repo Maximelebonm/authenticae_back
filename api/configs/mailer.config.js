@@ -17,7 +17,7 @@ if(process.env.NODE_ENV === "development"){
 }   
 else {
     mailerConfig = {
-        host: "smtp.example.com",
+        host: "smtp.hostinger.com",
         port: 587,
         tls: {
             rejectUnauthorized: true,
