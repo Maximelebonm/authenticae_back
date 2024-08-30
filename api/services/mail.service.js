@@ -5,7 +5,7 @@ const appConfig = require('../configs/app.config')
 const transporter = nodemailer.createTransport({
   host: mailerConfig.host,
   port: mailerConfig.port,
-  secure: false, // Use `true` for port 465, `false` for all other ports
+  secure: true, // Use `true` for port 465, `false` for all other ports
   auth: {
     user: mailerConfig.auth.user,
     pass: mailerConfig.auth.pass,
