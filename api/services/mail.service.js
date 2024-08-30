@@ -17,7 +17,7 @@ const mailvalidation = async (req,token)=> {
   // send mail with defined transport object
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <harry.olson64@ethereal.email>', // sender address
+      from: '"Authenticae" <contact@authenticae.fr>', // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - Valider votre email", // Subject line
       html: `
