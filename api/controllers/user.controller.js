@@ -67,7 +67,7 @@ const emailValidation = async(req,res)=>{
         } else {
             const token = security.jwtsecurityValidEmail(req.body)
             const validationEmail = await mailService.mailvalidation(req,token)
-
+            console.log(validationEmail)
             res.send({message : 'email envoyé'})
         }
     } catch (error) {
