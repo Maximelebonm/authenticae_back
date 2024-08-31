@@ -15,7 +15,7 @@ const upload = multer({
     destination : (req,file,cb)=>{
         const cookie = decodeToken(req.cookies.auth)
         const id = cookie.Id_user
-        const path = storageConfig + `/storage/${id}`;
+        const path = storageConfig + `/${id}`;
         fs.mkdirSync(path, { recursive: true })
         cb(null, path);
     },
