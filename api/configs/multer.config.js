@@ -2,12 +2,20 @@ const multer  = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { decodeToken } = require('../security/auth.security');
+let storageConfig
+if(process.env.NODE_ENV === "development"){
+    storageConfig = '__dirname, ../..'
+      
+} else {
+    storageConfig = process.env.CLOUDCUBE_URL 
+}
+
 const upload = multer({
     storage : multer.diskStorage({
     destination : (req,file,cb)=>{
         const cookie = decodeToken(req.cookies.auth)
         const id = cookie.Id_user
-        const path = `__dirname, '../../storage/${id}`;
+        const path = storageConfig + `/storage/${id}`;
         fs.mkdirSync(path, { recursive: true })
         cb(null, path);
     },

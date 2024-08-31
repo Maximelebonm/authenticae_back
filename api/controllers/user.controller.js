@@ -1,7 +1,8 @@
 const userService = require('../services/user.service');
 const security = require('../security/auth.security');
 const config = require('../configs/app.config');
-const mailService = require('../services/mail.service')
+const mailService = require('../services/mail.service');
+const cookieConfig = require('../configs/cookie.config')
 
 const findAllUser = async (req,res) => {
     try {
