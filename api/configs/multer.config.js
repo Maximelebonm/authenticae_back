@@ -4,10 +4,10 @@ const fs = require('fs');
 const { decodeToken } = require('../security/auth.security');
 let storageConfig
 if(process.env.NODE_ENV === "development"){
-    storageConfig = '__dirname, ../..'
+    storageConfig = '__dirname, ../../storage'
       
 } else {
-    storageConfig = process.env.CLOUDCUBE_URL 
+    storageConfig = process.env.CLOUDCUBE_URL + '/public'
 }
 
 const upload = multer({
