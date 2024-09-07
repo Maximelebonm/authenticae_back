@@ -28,14 +28,8 @@ const createPseudo = async (req,res) => {
         const findNewUser = await userService.findOneUserByID(req.params.id)
         const accessToken = security.jwtsecurity(findNewUser)
         res.clearCookie('auth');
-        res.cookie('auth', accessToken,{
-            domain: '.authenticae.fr',
-            path: '/',
-            sameSite:'none',
-            secure : true,
-            httpOnly: false,
-            maxAge : 864000000,
-        }).send({message : 'pseudo created'})
+        res.cookie('auth', accessToken,cookieConfig)
+        .send({message : 'pseudo created'})
     } catch (err) {
         return err
     }
@@ -79,22 +73,13 @@ const emailValidation = async(req,res)=>{
 
 const loginUser = async (req,res) => {
     try {
-        console.log(req.body.email)
         const findUser = await userService.findOneUserByEmail(req.body.email);
         if(findUser){
             const comparePassword = await security.comparePassword(req.body.password,findUser.password);
             if(comparePassword){
+                console.log(cookieConfig)
                 const accessToken = security.jwtsecurity(findUser)
-                // console.log('findUser : ', findUser)
-                // console.log('accessToken : ', accessToken)
-                res.cookie('auth', accessToken,{
-                    domain: '.authenticae.fr',
-                    path: '/',
-                    sameSite:'none',
-                    secure : true,
-                    httpOnly: false,
-                    maxAge : 864000000,
-                })
+                res.cookie('auth', accessToken,cookieConfig)
                 res.status(200).send({message : 'connection autorisé'});
             }
             else {
@@ -158,7 +143,25 @@ const updateUser = async (req, res) => {
     }
 }
 
-
+const renewPassword = async (req, res) => {
+    try {
+        const userExist = await userService.findOneUserByEmail(req.body.email);
+    
+        if(userExist && userExist.email){
+            const password = await security.hashPassword(req.body.password);
+            const updatePassword = await userService.renewPassword(password,userExist.Id_user)
+            if(updatePassword === 'password updated'){
+                res.status(200).send({message : 'password updated'})
+            } else {
+                res.send({message : 'password not updated'})
+            }
+        } else {
+            res.send({message : "user doesn't exist"})
+        }  
+    } catch (err) {
+        res.status(404).send(err)
+    }
+}
 const logoutUser = async (req, res) => {
     try {
         res.send({message : 'deconnexion OK'})
@@ -169,22 +172,22 @@ const logoutUser = async (req, res) => {
 
 const checkGoogleUser = async (req, res)=> {
     try{
-    const userExist = await userService.findOneUserByEmail(req.emails[0].value);
-    if(userExist.Google_ID){
-        return userExist 
-    } 
-    else if (userExist.email){
-        const userGoogle = await userService.addGoogleId(userExist,req.id);
-        const userUpdated = await userService.findOneUserByID(userExist.Id_user)
-        return userGoogle
-    }
-    else {
-        const registerGoogleUser = await userService.createUser(req)
-        return registerGoogleUser      
-    } 
+        const userExist = await userService.findOneUserByEmail(req.emails[0].value);
+        if(userExist.Google_ID){
+            return userExist 
+        } 
+        else if (userExist.email){
+            const userGoogle = await userService.addGoogleId(userExist,req.id);
+            const userUpdated = await userService.findOneUserByID(userExist.Id_user)
+            return userGoogle
+        }
+        else {
+            const registerGoogleUser = await userService.createUser(req)
+            return registerGoogleUser      
+        } 
     } catch (err){
        return err
     }
 }
 
-module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser}
+module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser,renewPassword}

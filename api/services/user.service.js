@@ -126,7 +126,7 @@ const findOneUserByID = async (id) => {
                 through: {
                     model: user_roleSchema, // Inclure la table d'association user_role
                     attributes: [], // Exclure tous les attributs de la table d'association
-                    where: { deleted_date: null } // Ajouter une condition sur la colonne deleted_date
+                    where: { deleted_date: null }
                 }
                 },
                 {
@@ -232,7 +232,22 @@ const updateUser = async (req) => {
     } catch (error) {
         return error
     }
+}
 
+const renewPassword = async(password,id)=>{
+    try {
+        const userUpdated = await userSchema.update({
+            password : password,
+            updated_by : 'user',
+            updated_date : Date.now()
+        },{
+            where : {Id_user : id},
+            returning: true,
+            })
+        return 'password updated'
+    } catch (error) {
+        return error
+    }
 }
 
 module.exports = {
@@ -245,5 +260,5 @@ module.exports = {
     findOneUserByID,
     updateUser,
     addStripeUser,
-    addGoogleId
+    addGoogleId,renewPassword
 }

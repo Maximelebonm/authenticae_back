@@ -6,13 +6,14 @@ const personalizationSchema = require('../schemas/personalization.schema')
 const optionService = require('./option.service');
 const personalizationService = require('./personalization.service')
 const productImagesSchema = require('../schemas/product_image.schema');
+const shopSchema = require('../schemas/shop.schema')
 const {Sequelize, Op} = require('sequelize');
 
 const findAllProducts = async () => {
     try {
         const productsFinded = await productSchema.findAll({where : {deleted_by : '0'},
         attributes: ['Id_product','name','price','description'],
-        include: {
+        include: [{
             model: productImagesSchema,
             attributes: ['storage'],
             as: 'productImages',
@@ -21,7 +22,12 @@ const findAllProducts = async () => {
                 order: 0,
                 archived : false,
             },
-        }})
+        },{
+            model : shopSchema,
+            where : {
+               deleted_by : 0, 
+            }
+        }]})
         return productsFinded   
         
     } catch (error) {

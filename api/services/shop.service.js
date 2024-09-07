@@ -117,6 +117,7 @@ const updateShop = async (req,res) => {
     }
 }
 
+
 const deleteShop = async(id) => {
     try {
         const ShopUpdate = await shopSchema.update({
@@ -131,4 +132,19 @@ const deleteShop = async(id) => {
     }
 }
 
-module.exports = {findAllShop,imageShop,findShop,createShop,updateShop,deleteShop,findShopById}
+const undeleteShop = async(id) => {
+    try {
+        const ShopUpdate = await shopSchema.update({
+            deleted_by : 0,
+            updated_date : Date.now(),
+            updated_by : 'admin',
+        },{
+            where : {Id_shop : id},
+        })
+         return ShopUpdate
+    } catch (error) {
+        return error
+    }
+}
+
+module.exports = {findAllShop,imageShop,findShop,createShop,updateShop,deleteShop,findShopById,undeleteShop}

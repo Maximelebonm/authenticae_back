@@ -7,7 +7,7 @@ if(process.env.NODE_ENV === "development"){
     storageConfig = '__dirname, ../../storage'
       
 } else {
-    storageConfig = process.env.CLOUDCUBE_URL + '/public'
+    storageConfig = process.env.STORAGE_PROD + '/storage'
 }
 
 const upload = multer({

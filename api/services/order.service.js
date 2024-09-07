@@ -15,8 +15,8 @@ const shopSchema = require('../schemas/shop.schema');
 const addressSchema = require('../schemas/adress.schema');
 const { Op } = require('sequelize');
 
-const createOrder = async (req,t,idStripe) => {
-    // const t = await db.transaction();
+const createOrder = async (req,idStripe) => {
+    const t = await db.transaction();
     const { cart, products, user,address_billing,address_delivery } = req.body;
     
     try {
@@ -27,8 +27,8 @@ const createOrder = async (req,t,idStripe) => {
             order_delivery: 'En attente',
             payment_id : idStripe,
             payment_state : 'success',
-            Id_delivery_address: address_delivery,
-            Id_billing_address: address_billing,
+            Id_delivery_address: address_delivery.Id_address,
+            Id_billing_address: address_billing.Id_address,
             Id_user: cart.Id_user,
             created_by: 'user',
         }, { transaction: t });
@@ -63,7 +63,7 @@ const createOrder = async (req,t,idStripe) => {
                 }, { transaction: t });
             });
     
-            const personalizationPromises = element.cartproductpersonalizations.map(async (personalizationItem) => {
+            const personalizationPromises =  element.cartproductpersonalizations.map(async (personalizationItem) => {
                 await orderPersonalizationschema.create({
                     price: personalizationItem.price,
                     consumer_text: personalizationItem.consumer_text,
@@ -81,15 +81,15 @@ const createOrder = async (req,t,idStripe) => {
             ]);
         });
     
-        const promiseCart = cartSchema.update({ cart_state: "paid" }, {
+        const promiseCart = await cartSchema.update({ cart_state: "paid" }, {
             where: { Id_cart: cart.Id_cart },
             transaction: t
         });
-    
+        const resolvedOrderProducts = await Promise.all(orderProductPromises);
         // Attendre toutes les promesses
         await Promise.all([orderProductPromises, promiseCart]);
     
-        // await t.commit();  // Commit de la transaction
+        await t.commit();  // Commit de la transaction
         return createOrder;  // Retourner la commande créée
     
     } catch (error) {
@@ -98,7 +98,22 @@ const createOrder = async (req,t,idStripe) => {
     }
     
 }
-
+const addPdfStorage = async (store,id)=>{
+    try {
+        const orderProductUpdate = await orderSchema.update({
+            storage_facture : store,
+            updated_by : 'user',
+            updated_date : Date.now()
+        },{
+            where : {Id_order : id}
+        })
+    
+        return orderProductUpdate
+        
+    } catch (error) {
+        return error
+    }
+}
 const cancelOrder = async (req,t) =>{
     try {
         const {products} = req.body
@@ -187,6 +202,56 @@ const cancelOrderPercent = async(req,transaction,refundProduct)=> {
         return error
     }
 }
+const getOrderByIdOrder = async(id)=>{
+    try {
+        const orderFinded = await orderSchema.findOne({
+            where : {Id_order : id},
+            include : [{
+                model : orderProductSchema,
+                required : true,
+                include : [{
+                        model : orderProductOptionSchema,
+                        required : false,
+                        include : [{
+                            model : productOptionSchema,
+                            attributes : ['name'],
+                        }, {
+                            model : subOptionSchema,
+                            attributes : ['detail'],
+                        }],
+                    },{
+                        model : orderPersonalizationschema,
+                        required : false,
+                        attributes : ['consumer_text','price'],
+                        include : [{
+                            model : personalisationSchema,
+                            attributes : ['name','detail','price'],
+                        }], 
+                    },{                                              
+                        model: productSchema,
+                        attributes : ['name','detail','description','price','working_days'],
+                        required : true,
+                        include : [{
+                            model : shopSchema,
+                            attributes : ['name','profil_picture'],
+                        },{
+                            model : productImageSchema,
+                            as: 'productImages',
+                            attributes : ['storage','order'],
+                            where : {order : 0}
+                        }]
+                }],
+            },{
+                model : userSchema,
+                attributes : ['firstname','lastname','email']
+            }],
+        })
+            return orderFinded   
+    } catch (error) {
+        return error
+    }
+}
+
 const getUserOrder = async(id)=>{
     try {
         const orderFinded = await orderSchema.findAll({
@@ -416,4 +481,17 @@ const cancelProductOrderSend = async(id)=>{
     }
 }
 
-module.exports = {createOrder,findProducerOrder,productOrderProduction,cancelProductOrderProduction,productOrderSend,cancelProductOrderSend,getUserOrder,cancelOrder,cancelOrderProductByUser,cancelOrderInProgress,cancelOrderPercent}
+module.exports = {
+    createOrder,
+    findProducerOrder,
+    productOrderProduction,
+    cancelProductOrderProduction,
+    productOrderSend,cancelProductOrderSend,
+    getUserOrder,
+    cancelOrder,
+    cancelOrderProductByUser,
+    cancelOrderInProgress,
+    cancelOrderPercent,
+    addPdfStorage,
+    getOrderByIdOrder
+}

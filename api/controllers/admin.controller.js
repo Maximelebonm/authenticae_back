@@ -23,6 +23,8 @@ const deleteProducerRole = async(req,res)=>{
     }
 }
 
+
+
 const deleteShop = async(req,res)=>{ 
     try {
         const deleteShop = await shopService.deleteShop(req.params.id)
@@ -32,4 +34,13 @@ const deleteShop = async(req,res)=>{
     }
 }
 
-module.exports = {addProducerRole,deleteProducerRole,deleteShop}
+const undeleteShop = async(req,res)=>{ 
+    try {
+        const deleteShop = await shopService.undeleteShop(req.params.id)
+        res.send({message : 'shop activé'})
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+module.exports = {addProducerRole,deleteProducerRole,deleteShop,undeleteShop}

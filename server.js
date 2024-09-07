@@ -15,7 +15,8 @@ const app = express();
 
 app.use(cors(config));
 
-app.use("/storage",express.static(path.join(__dirname, './storage')));
+app.use("/storage", express.static(path.join(__dirname, './storage')));
+app.use("/documents", express.static(path.join(__dirname, './documents')));
 
 app.use(session({
     secret: process.env.COOKIES_SECRET,

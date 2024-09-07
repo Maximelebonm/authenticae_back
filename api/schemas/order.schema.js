@@ -26,6 +26,9 @@ const orderSchema = db.define(
             allowNull : false,
             defaultValue : 0,
         },
+        storage_facture : {
+            type : DataTypes.CHAR,
+        },
         order_delivery : {
             type : DataTypes.CHAR,
             allowNull : false,

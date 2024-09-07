@@ -17,7 +17,7 @@ const mailvalidation = async (req,token)=> {
   // send mail with defined transport object
   try {
     const info = await transporter.sendMail({
-      from: `"Authenticae" <contact@authenticae.fr>`, // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>`, // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - Valider votre email", // Subject line
       html: `
@@ -71,7 +71,7 @@ const mailvalidation = async (req,token)=> {
 const mailProduction = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - Produit pris en charge", // Subject line
       html: `
@@ -129,7 +129,7 @@ const mailProduction = async(req)=>{
 const cancelmailProduction = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - annulation prise en charge", // Subject line
       html: `
@@ -187,7 +187,7 @@ const cancelmailProduction = async(req)=>{
 const mailsendProduct = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - Produit envoyé", // Subject line
       html: `
@@ -246,7 +246,7 @@ const mailsendProduct = async(req)=>{
 const mailPaiement = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.user.email, // list of receivers
       subject: "Authenticae - Paiement confirmé", // Subject line
       html: `
@@ -305,7 +305,7 @@ const mailPaiement = async(req)=>{
 const mailCancelpercent =async(req,finalAmout)=>{
   try { 
   const info = await transporter.sendMail({
-    from: '"Authenticae" <contact@authenticae.fr>', // sender address
+    from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
     to: req.body.user.email, // list of receivers
     subject: "Authenticae - annulation confirmé", // Subject line
     html: `
@@ -364,7 +364,7 @@ const mailCancelpercent =async(req,finalAmout)=>{
 const mailCancelByUser = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.user.email, // list of receivers
       subject: "Authenticae - annulation confirmé", // Subject line
       html: `
@@ -423,7 +423,7 @@ const mailCancelByUser = async(req)=>{
 const cancelmailsendProduct = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      from: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.email, // list of receivers
       subject: "annulation envoie", // Subject line
       html: `
@@ -482,7 +482,7 @@ const cancelmailsendProduct = async(req)=>{
 const mailcancelOrder = async(req)=>{
   try {
     const info = await transporter.sendMail({
-      from: '"Authenticae" <contact@authenticae.fr>', // sender address
+      ffrom: `"Authenticae" <${mailerConfig.auth.user}>'`, // sender address
       to: req.body.user.email, // list of receivers
       subject: "Authenticae - annulation commande", // Subject line
       html: `

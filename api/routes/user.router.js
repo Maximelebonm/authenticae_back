@@ -6,7 +6,9 @@ const passport = require('passport')
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const config = require('../configs/app.config');
 const { jwtsecurity, decodeToken,jwtCart } = require('../security/auth.security');
-const googleConfig = require('../configs/google.config')
+const googleConfig = require('../configs/google.config');
+const cookieConfig = require('../configs/cookie.config')
+const clearCookieConfig = require('../configs/clearCookie.config')
 
 router.get("/", userController.findAllUser);
 
@@ -15,7 +17,7 @@ router.post("/register", userController.registerUser);
 router.post("/login", userController.loginUser);
 router.put("/delete/:id");
 router.put("/update/:id", protect,userController.updateUser);
-router.post('/password');
+router.put('/password',userController.renewPassword);
 router.post('/validation', userController.emailValidation)
 router.get('/redirect/logout', protect, userController.logoutUser);
 router.post('/pseudo/:id', protect, userController.createPseudo)
@@ -66,10 +68,10 @@ router.get('/google/login/failed', (req,res)=>{res.status(401).json({error : tru
 router.post('/logout', function(req, res, next) {
     req.logout(function(err) {
         if (err) { return next(err); }
-        res.clearCookie('auth');
-        res.clearCookie('cart');
-        res.clearCookie('pma_lang');
-        res.send({message : 'deconnexion OK'})
+        res.clearCookie('auth',clearCookieConfig);
+        res.clearCookie('cart',clearCookieConfig);
+        res.clearCookie('pma_lang',clearCookieConfig);
+        res.send({message : 'deconnecté'})
     });
 });
 

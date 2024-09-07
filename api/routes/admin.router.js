@@ -11,6 +11,7 @@ router.get("/:id", userController.findUserByID);
 router.post("/producer/role/add/:id", protect, adminController.addProducerRole); 
 router.put("/producer/role/delete/:id", protect, adminController.deleteProducerRole);
 router.put('/shop/delete/:id',protect, adminController.deleteShop)
+router.put('/shop/undelete/:id',protect, adminController.undeleteShop)
 
 router.post('/create-express-account/:id', async (req, res) => {
     try {

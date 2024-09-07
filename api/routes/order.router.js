@@ -6,6 +6,7 @@ const stripeClient = require('../configs/stripe.config')
 const orderController = require('../controllers/order.controller')
 const db = require('../configs/db.config');
 const config = require('../configs/app.config')
+
 router.get("/producer/:id" , orderController.getProducerOrder)
 router.get('/usercommands/:id', protect, orderController.getUserOrder);
 router.post('/producer/working_progress/:id', protect, orderController.cancelOrderInProgress);
@@ -231,9 +232,8 @@ router.post("/stripe/charge", protect, async (req, res) => {
       // Vérifiez que le paiement a réussi
       if (paymentIntentStatus.status === 'succeeded') {
           // Mettre à jour la base de données
-          const BddMaj = await orderController.createOrder(req, transaction,payment.id);
+          const BddMaj = await orderController.createOrder(req,payment.id);
           if (BddMaj) {
-              await transaction.commit();
               res.clearCookie('cart');
               res.send({
                   message: "payment succeeded",
@@ -245,8 +245,6 @@ router.post("/stripe/charge", protect, async (req, res) => {
         }
       } catch (error) {
         await stripeClient.paymentIntents.cancel(payment.id);
-        await transaction.rollback();
-        console.log(error);
         res.send({
             message: "payment failed",
             success: false,

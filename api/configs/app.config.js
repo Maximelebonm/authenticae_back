@@ -13,11 +13,8 @@ if(process.env.NODE_ENV === "development"){
     PORT : process.env.PORT || 5000,
     origin : process.env.ORIGIN_PROD,
     credentials : true,
-    // SSL: true, 
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
     methods : "GET,POST,PUT,DELETE",
-    // SSL_KEY: process.env.SSL_KEY || '/etc/letsencrypt/live/authenticae.fr/privkey.pem',
-    // SSL_CERT: process.env.SSL_CERT || '/etc/letsencrypt/live/authenticae.fr/fullchain.pem'
     }
 }
 
