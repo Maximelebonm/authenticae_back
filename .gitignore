@@ -144,4 +144,7 @@ dist
 #storage
 storage/
 
+#documents
+documents/
+
 # End of https://www.toptal.com/developers/gitignore/api/node
