@@ -5,6 +5,7 @@ if(process.env.NODE_ENV === "development"){
     mailerConfig = {
         host: "smtp.ethereal.email",
         port: 587,
+        secure : false,
         tls: {
             rejectUnauthorized: true,
             minVersion: "TLSv1.2"
@@ -19,6 +20,7 @@ else {
     mailerConfig = {
         host: process.env.MAIL_HOST,
         port: process.env.MAIL_PORT,
+        secure : true,
         tls: {
             rejectUnauthorized: true,
             minVersion: "TLSv1.2"

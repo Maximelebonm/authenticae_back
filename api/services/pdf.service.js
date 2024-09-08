@@ -31,6 +31,16 @@ const createFacture = (commande,req,filepath)=> {
               .stroke();
           }
 
+          const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Europe/Paris',
+            hour12: false // Format 24 heures
+        };
+
         const doc = new PDFDocument();
         const dir = path.dirname(filepath);
         if (!fs.existsSync(dir)) {
@@ -40,38 +50,50 @@ const createFacture = (commande,req,filepath)=> {
         doc.pipe(fs.createWriteStream(filepath));
     
         // Titre de la facture
-        doc.fontSize(20).text('Facture');
+        doc.fontSize(20).text('Facture', 50, 80);
     
+
         // Informations de l'entreprise
-        doc.fontSize(12).text(`Entreprise: Nervii Studio`, 50, 100,{ align: 'right' });
+        doc.fontSize(12).text(`N° Facture ${commande.number_facture}`, 50, 115);
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleString('fr-FR', options).replace(':', 'h');
+        doc.text(`Date : ${formattedDate}`, 50, 130);
+
+        doc.fontSize(12).text(`Entreprise: Nervii Studio - Authenticae`, 50, 100,{ align: 'right' });
         doc.text(`Adresse: 2 rue du moulin`, 50, 115,{ align: 'right' });
         doc.text(`59222 croix caluyau`, 50, 130,{ align: 'right' });
         doc.text(`Téléphone: 0675974553`, 50, 145,{ align: 'right' });
-        doc.text(`siret: 85084153700010`, 50, 145,{ align: 'right' });
+        doc.text(`siret: 85084153700010`, 50, 160,{ align: 'right' });
     
         // Espacer les sections
         doc.moveDown(2);
-        const address = req.body.address_billing
+        const addressBilligng = req.body.address_billing
+        const addressDelivery = req.body.address_delivery
         // Informations du client
         doc.text(`Facturé à: ${req.body.user.firstname} ${req.body.user.lastname}`, 50, 180);
-        doc.text(`Adresse: ${address.number} ${address.street}`, 50, 195);
-        doc.text(`${address.cityCode} ${address.city} ${address.country}`, 50, 210);
-        doc.text(`Date : ${Date.now()}`, 50, 210);
+
     
-        // doc.text(`Invoice Number: ${invoice.invoice_nr}`, 50, 200)
-		// .text(`Invoice Date: ${new Date()}`, 50, 215)
-		// .text(`Balance Due: ${invoice.subtotal - invoice.paid}`, 50, 130)
 
-		// .text(shipping.name, 300, 200)
-		// .text(shipping.address, 300, 215)
-		// .text(
-		// 	`${shipping.city}, ${shipping.state}, ${shipping.country}`,
-		// 	300,
-		// 	130,
-		// )
-		// .moveDown();
+        doc.font('Helvetica-Bold');
+        doc.text(`Adresse facturation:`, 50, 225);
+        doc.font('Helvetica');
+        doc.text(`${addressBilligng.number} ${addressBilligng.street}`, 50, 240,{width : 340});
+        doc.text(`${addressBilligng.cityCode} ${addressBilligng.city} ${addressBilligng.country}`, 50, 255,{width : 340});
+        if(addressBilligng.additional != undefined){
+            doc.text(`${addressBilligng.additional}`, 350, 270,{ width: 340 });
+        }
 
-        const invoiceTableTop = 330;
+        doc.font('Helvetica-Bold');
+        doc.text(`Adresse livraison:`, 350, 225, { align: 'left'});
+        doc.font('Helvetica');
+        doc.text(`${addressDelivery.number} ${addressDelivery.street}`, 350, 240, { align: 'left' });
+        doc.text(`${addressDelivery.cityCode} ${addressDelivery.city} ${addressDelivery.country}`, 350, 255,{ align: 'left' });
+        if(addressDelivery.additional != undefined){
+            doc.text(`${addressDelivery.additional}`, 350, 270,{ align: 'left' });
+        }
+       
+
+        const invoiceTableTop = 350;
 
         doc.font("Helvetica-Bold");
         generateTableRow(

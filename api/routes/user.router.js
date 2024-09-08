@@ -12,16 +12,15 @@ const clearCookieConfig = require('../configs/clearCookie.config')
 
 router.get("/", userController.findAllUser);
 
-router.get("/profile/:id", userController.findUserByID);
-router.post("/register", userController.registerUser);
 router.post("/login", userController.loginUser);
-router.put("/delete/:id");
-router.put("/update/:id", protect,userController.updateUser);
-router.put('/password',userController.renewPassword);
+router.post("/register", userController.registerUser);
 router.post('/validation', userController.emailValidation)
+router.put('/password',userController.renewPassword);
+router.get("/profile/:id",protect, userController.findUserByID);
+router.put("/delete/:id",protect,userController.deleteUser);
+router.put("/update/:id", protect,userController.updateUser);
 router.get('/redirect/logout', protect, userController.logoutUser);
 router.post('/pseudo/:id', protect, userController.createPseudo)
-
 
 /* 
 **************************************************************************

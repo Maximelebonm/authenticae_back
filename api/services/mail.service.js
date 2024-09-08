@@ -5,7 +5,7 @@ const appConfig = require('../configs/app.config')
 const transporter = nodemailer.createTransport({
   host: mailerConfig.host,
   port: mailerConfig.port,
-  secure: true, // Use `true` for port 465, `false` for all other ports
+  secure: mailerConfig.secure, // Use `true` for port 465, `false` for all other ports
   auth: {
     user: mailerConfig.auth.user,
     pass: mailerConfig.auth.pass,
@@ -262,7 +262,7 @@ const mailPaiement = async(req)=>{
             border-radius : 15px;
           }
           p {
-            font-size: 16px;
+            font-size: 12px;
           }
           .header {
             background-color: #f0f0f0;
@@ -281,7 +281,7 @@ const mailPaiement = async(req)=>{
           <div>
             Cet email est un email automatique, veuillez ne pas répondre
             <p> Bonjour ${req.body.user.firstname}, </p>
-          <p>votre paiement pour votre commande à été accepté ! Merci pour la confiance que vous nous accordé ! Vous serez tenus informé lors des différentes étapes pour vos produits.</p>
+          <p>Votre paiement pour votre commande a été accepté ! Retrouvez votre facture sur votre profil. Merci pour la confiance que vous nous accordez ! Vous serez tenu informé des différentes étapes concernant vos produits.</p>
 
           <p>Cordialement,</p>
 

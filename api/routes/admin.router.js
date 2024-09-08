@@ -4,7 +4,8 @@ const protect = require('../middlewares/auth.middleware');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_TEST_SECRET);
 const userController = require("../controllers/user.controller");
-const adminController = require('../controllers/admin.controller')
+const adminController = require('../controllers/admin.controller');
+const config = require('../configs/app.config')
 
 router.get("/", userController.findAllUser);
 router.get("/:id", userController.findUserByID);
@@ -20,8 +21,8 @@ router.post('/create-express-account/:id', async (req, res) => {
       // Créer un lien d'onboarding
       const accountLink = await stripe.accountLinks.create({
         account: account.id,
-        refresh_url: 'https://localhost:5173/reauth',
-        return_url: 'https://localhost:5173/return',
+        refresh_url: `${config.origin}/myshop`,
+        return_url: `${config.origin}/myshop`,
         type: 'account_onboarding',
       });
       const linkBDD = await userController.addstripeUser(req,res, account.id)

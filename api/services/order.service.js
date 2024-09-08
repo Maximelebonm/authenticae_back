@@ -20,6 +20,35 @@ const createOrder = async (req,idStripe) => {
     const { cart, products, user,address_billing,address_delivery } = req.body;
     
     try {
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Europe/Paris',
+            hour12: false // Format 24 heures
+        };
+
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0'); // Jour (01-31)
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Mois (01-12)
+            const year = date.getFullYear(); // Année (YYYY)
+        
+            return `${day}${month}${year}`;
+        }
+        
+        const currentDate = new Date();
+        const formattedDate = formatDate(currentDate);
+
+        let numberFacture = 0
+        const factureGeted = await getAllOrder(formattedDate)
+        if(factureGeted.length === 0){
+            numberFacture = formattedDate + '1'
+        } else {
+            const numberOfOrderOftheDay = (factureGeted.length +1).toString()
+            numberFacture = formattedDate + numberOfOrderOftheDay
+        }
         // Créer la commande principale
         const createOrder = await orderSchema.create({
             order_state: "Pay",
@@ -27,6 +56,7 @@ const createOrder = async (req,idStripe) => {
             order_delivery: 'En attente',
             payment_id : idStripe,
             payment_state : 'success',
+            number_facture : numberFacture,
             Id_delivery_address: address_delivery.Id_address,
             Id_billing_address: address_billing.Id_address,
             Id_user: cart.Id_user,
@@ -478,6 +508,19 @@ const cancelProductOrderSend = async(id)=>{
     }catch (err){
         console.log(err)
         return err
+    }
+}
+
+const getAllOrder = async(date)=>{
+    try {
+
+        const facturesGetted = await orderSchema.findAll({where : {number_facture : {
+            [Op.like]: `${date}%` // Le `%` indique que nous cherchons tous les enregistrements dont le champ `number_facture` commence par `today`
+        }}})
+
+        return facturesGetted
+    } catch (error) {
+        return error
     }
 }
 

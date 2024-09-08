@@ -190,4 +190,15 @@ const checkGoogleUser = async (req, res)=> {
     }
 }
 
-module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser,renewPassword}
+const deleteUser = async(req,res)=>{
+    try {
+        const detetedUser = await userService.deleteUser(req.params.id)
+        if(detetedUser === 'utilisateur supprimé'){
+            res.send({message : 'utilisateur supprimé'})
+        }
+    } catch (error) {
+        res.send({message : 'suprression impossible'})
+    }
+}
+
+module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser,renewPassword,deleteUser}

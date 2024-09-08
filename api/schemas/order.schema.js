@@ -29,6 +29,10 @@ const orderSchema = db.define(
         storage_facture : {
             type : DataTypes.CHAR,
         },
+        number_facture : {
+            type : DataTypes.CHAR,
+            allowNull : false,
+        },
         order_delivery : {
             type : DataTypes.CHAR,
             allowNull : false,

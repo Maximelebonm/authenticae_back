@@ -6,6 +6,7 @@ const userRoleService = require('./role.service');
 const cartSchema = require('../schemas/cart.schema');
 const shopSchema = require('../schemas/shop.schema')
 const db = require('../configs/db.config');
+const addressSchema = require('../schemas/adress.schema');
 
 const findAllUser = async ()=> {
     const userFinded = await userSchema.findAll( 
@@ -250,6 +251,49 @@ const renewPassword = async(password,id)=>{
     }
 }
 
+const deleteUser =async(id)=>{
+    try {
+        const t = await db.transaction();
+        const userUpdated = await userSchema.update({
+            firstname : '*****',
+            email : `anonymous${id}@deleteduser.com`,
+            lastname : '*****',
+            birthdate : Date.now(),
+            phone : '0000000000',
+            password : '*****',
+            Google_ID : '*****',
+            deleted_by : 'user',
+            deleted_date : Date.now()
+        },{
+            where : {Id_user : id},
+            transaction : t,
+        },
+        )
+        const adresseUpdated = await addressSchema.update({
+            city : '*****',
+            number : '*****',
+            street : '*****',
+            deleted_by : 'user',
+            deleted_date : Date.now()
+        },{
+            where : {Id_user : id} ,transaction : t,
+        })
+        const userRoleDeleted = await user_roleSchema.update({
+            deleted_by : 'user',
+            deleted_date : Date.now() 
+        },{
+            where : {Id_user : id}, transaction : t,
+        })
+
+        await t.commit();
+        
+        return 'utilisateur supprimé'
+    } catch (error) {
+        await t.rollback()
+        return 'suppression impossible'
+    }
+}
+
 module.exports = {
     createPseudo,
     findOneGoogleUser,
@@ -260,5 +304,7 @@ module.exports = {
     findOneUserByID,
     updateUser,
     addStripeUser,
-    addGoogleId,renewPassword
+    addGoogleId,
+    renewPassword,
+    deleteUser
 }
