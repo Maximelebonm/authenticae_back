@@ -2,6 +2,7 @@ const shopSchema = require('../schemas/shop.schema');
 const productSchema = require('../schemas/product.schema');
 const productImageschema = require('../schemas/product_image.schema');
 const userSchema = require('../schemas/user.schema');
+const { where } = require('sequelize');
 
 const findAllShop = async () => {
     try {
@@ -23,6 +24,7 @@ const findShop = async(req) => {
                 attributes: ['Id_user','Stripe_ID'], 
             },{
                 model : productSchema,
+                // where : {deleted_by : '0'},
                 include : [{
                     model: productImageschema,
                     as: 'productImages',
@@ -43,7 +45,7 @@ const findShopById = async(req) => {
             attributes : ['name','description','Id_shop','profil_picture','cover_picture'], 
             include : [{
                 model : productSchema,
-                attributes : ['Id_product','name'],
+                attributes : ['Id_product','name','price'],
                 include : [{
                     model: productImageschema,
                     as: 'productImages',

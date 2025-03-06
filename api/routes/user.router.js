@@ -11,6 +11,7 @@ const cookieConfig = require('../configs/cookie.config')
 const clearCookieConfig = require('../configs/clearCookie.config')
 
 router.get("/", userController.findAllUser);
+router.post("/checkEmail", userController.checkEmail);
 
 router.post("/login", userController.loginUser);
 router.post("/register", userController.registerUser);
@@ -46,18 +47,10 @@ router.get('/google/callback',
     failureRedirect: '/users/google/login/failed'}),async function(req, res) {
     const findCompleteUser = await userController.findUserByID(req)
     const accessToken = jwtsecurity(findCompleteUser)
-    res.cookie('auth', accessToken,{
-      maxAge : 864000000,
-      secure : true,
-      sameSite:'none',
-    })
+    res.cookie('auth', accessToken,cookieConfig)
     if(findCompleteUser.carts.length > 0){
       const accessTokenCart =  jwtCart(findCompleteUser.carts[0].Id_cart)
-        res.cookie('cart', accessTokenCart,{
-            maxAge : 864000000,
-            secure : true,
-            sameSite:'none',
-          })
+        res.cookie('cart', accessTokenCart,cookieConfig)
     }
     res.redirect(config.origin);
   });

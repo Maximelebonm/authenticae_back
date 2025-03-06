@@ -31,6 +31,11 @@ const personalizationSchema = db.define(
         personalizationActive : {
             type : DataTypes.BOOLEAN,
         },
+        obligatory : {
+            type : DataTypes.BOOLEAN,
+            defaultValue : null,
+            allowNull : true,
+        },
         created_by : {
             type : DataTypes.CHAR,
             allowNull : false,

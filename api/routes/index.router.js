@@ -15,6 +15,8 @@ const personalizationRoutes = require('./personalization.router')
 const cartRoutes = require('./cart.router')
 const addressRoutes = require('./address.router')
 const orderRoutes = require('./order.router')
+const tvaRoutes = require('./tva.router')
+const mrRoutes = require('./mr.router')
 
 router.use('/users', userRoutes);
 router.use('/script', scriptRoutes);
@@ -27,5 +29,8 @@ router.use('/personalization', personalizationRoutes)
 router.use('/cart', cartRoutes)
 router.use('/address', addressRoutes)
 router.use('/order' , orderRoutes)
+router.use('/tva' , tvaRoutes);
+router.use('/mr', mrRoutes);
+
 
 module.exports = router

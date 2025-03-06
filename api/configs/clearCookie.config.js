@@ -1,18 +1,18 @@
 let clearCookieConfig
 if(process.env.NODE_ENV === "development"){
-    cookieConfig = {
+    clearCookieConfig = {
         sameSite:'none',
         secure : true,
-        maxAge : -864000000,
+        maxAge : 0,
     }
 } else {
-    cookieConfig ={
+    clearCookieConfig ={
         domain: '.authenticae.fr',
         path: '/',
         sameSite:'none',
         secure : true,
         httpOnly: false,
-        maxAge : -864000000,
+        maxAge : 0,
     }
 }
 

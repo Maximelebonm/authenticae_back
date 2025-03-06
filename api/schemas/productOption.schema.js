@@ -20,6 +20,11 @@ const productOptionSchema = db.define(
         optionActive : {
             type : DataTypes.BOOLEAN,
         },
+        obligatory : {
+            type : DataTypes.BOOLEAN,
+            defaultValue : null,
+            allowNull : true,
+        },
         created_by : {
             type : DataTypes.CHAR,
             allowNull : false,

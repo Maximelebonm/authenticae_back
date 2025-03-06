@@ -23,6 +23,12 @@ const jwtsecurity = (props) => {
     }
 }
 
+const jwtRepassword= (props) => {
+    const {Id_user,email} =props
+    const payload = {Id_user : Id_user, email : email};
+    return jwt.sign(payload, process.env.JWT_SECRET)
+}
+
 const jwtCart = (props) => {
     const Id_cart = props
     const payload = {Id_cart : Id_cart};
@@ -80,4 +86,4 @@ const comparePassword = async (passwordToCheck,hashedPasswordFromDatabase)=>{
 
 
 
-module.exports = {parseCookies,jwtsecurity,jwtCart,decodeToken,comparePassword,hashPassword,jwtsecurityValidEmail}
+module.exports = {parseCookies,jwtsecurity,jwtCart,decodeToken,comparePassword,hashPassword,jwtsecurityValidEmail,jwtRepassword}

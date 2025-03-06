@@ -1,6 +1,8 @@
-const cartService = require('../services/cart.service')
-const security = require('../security/auth.security')
-const userService = require('../services/user.service')
+const cartService = require('../services/cart.service');
+const security = require('../security/auth.security');
+const userService = require('../services/user.service');
+const cookieConfig = require('../configs/cookie.config');
+const clearCookieConfig = require('../configs/clearCookie.config');
 
 const findCartAndProducts=async (req,res)=>{
     try {
@@ -9,7 +11,7 @@ const findCartAndProducts=async (req,res)=>{
             res.status(200).send({message : "cart loaded", data : response})
         }
         else {
-            res.clearCookie('cart');
+            res.clearCookie('cart',clearCookieConfig);
             res.send({message : "cart unexiste", data : response})
         }
     } catch (err) {
@@ -49,11 +51,7 @@ const createCart = async (req,res,id_user)=> {
         const createCart = await cartService.createCart(req,res,id_user)
         if(createCart.Id_cart){
             const accessToken =  security.jwtCart(createCart.Id_cart)
-            res.cookie('cart', accessToken,{
-                maxAge : 864000000,
-                secure : true,
-                sameSite:'none',
-              })
+            res.cookie('cart', accessToken,cookieConfig)
             res.status(200).send({message : 'cart créé', data : createCart})
         }
         if(createCart.errors){

@@ -7,11 +7,13 @@ const optionService = require('./option.service');
 const personalizationService = require('./personalization.service')
 const productImagesSchema = require('../schemas/product_image.schema');
 const shopSchema = require('../schemas/shop.schema')
+const tvaSchema = require('../schemas/tva.schema')
 const {Sequelize, Op} = require('sequelize');
 
 const findAllProducts = async () => {
     try {
-        const productsFinded = await productSchema.findAll({where : {deleted_by : '0'},
+        const productsFinded = await productSchema.findAll({
+        where : {deleted_by : '0'},
         attributes: ['Id_product','name','price','description'],
         include: [{
             model: productImagesSchema,
@@ -27,7 +29,9 @@ const findAllProducts = async () => {
             where : {
                deleted_by : 0, 
             }
-        }]})
+        }
+    
+    ]})
         return productsFinded   
         
     } catch (error) {
@@ -37,7 +41,16 @@ const findAllProducts = async () => {
 
 const findProduct = async(id) => {
     try {
-    const product = await productSchema.findOne({where : {Id_product : id}})
+    const product = await productSchema.findOne({
+        include : {
+            required: false,
+            model : tvaSchema,
+            where : {
+               deleted_by : 0, 
+            }
+        },
+        where : {Id_product : id}
+    })
     const option = await optionsSchema.findAll({
         where : {Id_product : id, deleted_by : 0},
         include: [{
@@ -228,6 +241,7 @@ const upPicture = async(req)=> {
 
 const updateProduct = async (req,res) => {
     try {
+        
         const productUpdate = await productSchema.update({
             name : req.body.name,
             description : req.body.description,
@@ -238,6 +252,7 @@ const updateProduct = async (req,res) => {
             working_days : req.body.productWorkingDays,
             quantity_reservation : req.body.quantity_reservation,
             Id_material : req.body.Id_material,
+            Id_tva : req.body.Id_tva,
             updated_by : 'user',
             updated_date : Date.now()},
             {

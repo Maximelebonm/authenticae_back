@@ -22,6 +22,22 @@ const findUserByEmail = async (req,res) => {
     }
 }
 
+const checkEmail = async (req,res) => {
+    try {
+        const request = await userService.checkEmail(req.body.email)
+        if(request){
+
+            const token = security.jwtRepassword(request)
+            const email = await mailService.mailForgetPassword(req,token)
+            res.send({message : 'email exist'})
+        } else {
+            res.send({message : 'email not exist'})
+        }
+    } catch (err) {
+        res.send({message : 'une erreur est survenue', data : err})
+    }
+}
+
 const createPseudo = async (req,res) => {
     try {
         const request = await userService.createPseudo(req)
@@ -201,4 +217,4 @@ const deleteUser = async(req,res)=>{
     }
 }
 
-module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser,renewPassword,deleteUser}
+module.exports = {findAllUser,registerFirstUser,emailValidation,createPseudo,findUserByID,findUserByEmail,registerUser, updateUser,loginUser, checkGoogleUser,logoutUser, addstripeUser,renewPassword,deleteUser,checkEmail}

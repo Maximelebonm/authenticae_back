@@ -55,6 +55,21 @@ const findOneUserByEmail = async (email) => {
     }
 }
 
+const checkEmail = async (email) => {
+    try {
+
+        const user = await userSchema.findOne({where : {email : email, deleted_date : null, deleted_by : 0}})
+        if(user){
+            return user
+        } else {
+            return false
+        }
+    }
+    catch (error) {
+        return error
+    }
+}
+
 const findProducer = async (req) => {
     return await userSchema.findOne({where : {role : producer}})
 }
@@ -155,33 +170,44 @@ const findOneUserByID = async (id) => {
 const createUser = async (req,password) => {
     try {
         const t = await db.transaction();
-        let userCreatedPromise
-        if(req.provider){
-            userCreatedPromise = await userSchema.create({
-                lastname : req._json.family_name,
-                firstname : req._json.given_name,
-                email : req._json.email,
-                Google_ID : req.id,
-                created_by : 'google'
-             },{ transaction: t });
-        } else {
-            userCreatedPromise = await userSchema.create({
-                firstname : req.body.firstname,
-                lastname : req.body.lastname,
-                birthdate : req.body.birthdate,
-                email : req.body.email,
-                phone : req.body.phone,
-                password : password,
-                profil_picture : req.body.profil_picture,
-                cover_picture : req.body.cover_picture,
-                created_by : 'user',
-             },{ transaction: t });
-        }
+        // let userCreatedPromise
+        // if(req.provider){
+        //     userCreatedPromise = await userSchema.create({
+        //         lastname : req._json.family_name,
+        //         firstname : req._json.given_name,
+        //         email : req._json.email,
+        //         Google_ID : req.id,
+        //         created_by : 'google'
+        //      },{ transaction: t });
+        // } else {
+        //     userCreatedPromise = await userSchema.create({
+        //         firstname : req.body.firstname,
+        //         lastname : req.body.lastname,
+        //         birthdate : req.body.birthdate,
+        //         email : req.body.email,
+        //         phone : req.body.phone,
+        //         password : password,
+        //         profil_picture : req.body.profil_picture,
+        //         cover_picture : req.body.cover_picture,
+        //         created_by : 'user',
+        //      },{ transaction: t });
+        // }
+
+        const userCreatedPromise = await userSchema.create({
+            firstname : req.body.firstname,
+            lastname : req.body.lastname,
+            birthdate : req.body.birthdate,
+            email : req.body.email,
+            phone : req.body.phone,
+            password : password,
+            profil_picture : req.body.profil_picture,
+            cover_picture : req.body.cover_picture,
+            created_by : 'user',
+         },{ transaction: t });
     
         const findRole = await userRoleService.findRoleByName('client'); 
         const userFull = await userCreatedPromise.addRole(findRole,{ through: { created_by: 'user' },transaction: t});
 
-        
         const createCartPromise = await cartSchema.create({
             cart_state : "active",
             price : 0,
@@ -190,7 +216,6 @@ const createUser = async (req,password) => {
         }, { transaction: t })
         
         await Promise.all([userFull,userCreatedPromise,createCartPromise])
-
 
         await t.commit();
 
@@ -306,5 +331,6 @@ module.exports = {
     addStripeUser,
     addGoogleId,
     renewPassword,
-    deleteUser
+    deleteUser,
+    checkEmail
 }

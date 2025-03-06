@@ -127,7 +127,6 @@ const createProduct = async (req,res)=> {
     try {
         const createProduct = await productService.createProduct(req)
         res.status(200).send({message : 'product created', data : createProduct})
-     
     } catch (error) {
         res.status(500).send({message : 'une erreur est survenu', data : error})
     }

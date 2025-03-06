@@ -27,6 +27,7 @@ const createOption = async (req,productId)=> {
         const optionCreated = await optionschema.create({
             name : req.name,
             optionActive : req.optionActive,
+            obligatory : req.obligatory,
             Id_product : productId,
             created_by : 'user',
         });
@@ -43,6 +44,7 @@ const updateOption = async (req) => {
         const optionUpdate = await optionschema.update({
             name : req.name,
             optionActive : req.optionActive,
+            obligatory : req.obligatory,
             updated_by : 'user',
             updated_date : Date.now()
         },{

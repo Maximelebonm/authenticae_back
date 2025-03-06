@@ -62,9 +62,11 @@ router.post('/producer/send/:id', protect, async (req, res) => {
   const transaction = await db.transaction();
   try {
       // Création de l'intention de paiement
-      const amoutPercents = amountProduct * 5 / 100
-      const amoutFinal = amountProduct - amoutPercents
-      const amountCents = amoutFinal * 100
+      // const amoutPercents = amountProduct * 5 / 100
+      // const amoutFinal = amountProduct - amoutPercents
+      // const amountCents = amoutFinal * 100
+
+      const amountCents = amountProduct * 100
 
       const transfer = await stripeClient.transfers.create({
                 amount: amountCents,

@@ -12,7 +12,63 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// async..await is not allowed in global scope, must use a wrapper
+const style = `
+<style>
+.mailContainer{
+  padding : 40px;
+  background-color : #dfccb3;
+  height : 100%;
+}
+.mailContent{
+  padding : 20px;
+  background-color : #ffffff;
+  border-radius : 15px;
+}
+p {
+  font-size: 16px;
+}
+.header {
+  background-color: #f0f0f0;
+  padding: 10px;
+}
+.barreTop {
+  border-top : 1px solid;
+  margin-top : 80px;
+}
+footer {
+margin-top : 10px;
+}
+</style>
+`
+
+const mailForgetPassword = async (req,token)=> {
+  // send mail with defined transport object
+  try {
+    const info = await transporter.sendMail({
+      from: `"Authenticae" <${mailerConfig.auth.user}>`, // sender address
+      to: req.body.email, // list of receivers
+      subject: "Authenticae - Réinitialisation de votre mot de passe", // Subject line
+      html: style + `
+        <div class='mailContainer'>
+          <div class='mailContent'>
+            <div>
+              <p>Afin de réinitialiser votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
+              <a href="${appConfig.origin}/password/${token} " style="display: inline-block; padding: 10px 20px; background-color: #86735B; color: #fff; text-decoration: none; border-radius: 5px;">Réinitialiser mon mot de passe</a>
+            </div>
+            <div class="barreTop"><div>
+            <footer>
+              contact email : contact@authenticae.fr
+            </footer>
+          </div>
+        </div>
+    `,
+    });
+    return info
+    } catch (error) {
+      return error 
+    }
+
+}
 const mailvalidation = async (req,token)=> {
   // send mail with defined transport object
   try {
@@ -20,34 +76,8 @@ const mailvalidation = async (req,token)=> {
       from: `"Authenticae" <${mailerConfig.auth.user}>`, // sender address
       to: req.body.email, // list of receivers
       subject: "Authenticae - Valider votre email", // Subject line
-      html: `
-          <style>
-            .mailContainer{
-              padding : 40px;
-              background-color : #dfccb3;
-              height : 100%;
-            }
-            .mailContent{
-              padding : 20px;
-              background-color : #ffffff;
-              border-radius : 15px;
-            }
-            p {
-              font-size: 16px;
-            }
-            .header {
-              background-color: #f0f0f0;
-              padding: 10px;
-            }
-            .barreTop {
-              border-top : 1px solid;
-            margin-top : 80px;
-            }
-            footer {
-            margin-top : 10px;
-            }
-        </style>
-                 <div class='mailContainer'>
+      html: style + `
+        <div class='mailContainer'>
           <div class='mailContent'>
             <div>
               <p>Afin de valider votre email, veuillez cliquer sur le bouton ci-dessous :</p>
@@ -547,6 +577,7 @@ module.exports = {
   mailPaiement,
   mailCancelByUser,
   mailCancelpercent,
-  mailcancelOrder
+  mailcancelOrder,
+  mailForgetPassword
 }
 
