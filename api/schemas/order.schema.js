@@ -1,6 +1,8 @@
-const {Sequelize, DataTypes} = require('sequelize')
+const {Sequelize, DataTypes, or} = require('sequelize')
 const db = require("../configs/db.config")
 const addressSchema = require('./adress.schema');
+const deliveryMethodSchema = require('./deliveryMethod.schema');
+const orderStateSchema = require('./orderstate.schema');
 
 const orderSchema = db.define(
     "orders",
@@ -12,9 +14,13 @@ const orderSchema = db.define(
             defaultValue : Sequelize.UUIDV4,
             unique : true,
         },
-        order_state : {
-            type : DataTypes.CHAR,
-            allowNull : false,
+        Id_order_state: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: orderStateSchema,
+                key: 'Id_order_state',
+            },
         },
         price : {
             type : DataTypes.FLOAT,
@@ -33,25 +39,25 @@ const orderSchema = db.define(
             type : DataTypes.CHAR,
             allowNull : false,
         },
-        order_delivery : {
-            type : DataTypes.CHAR,
-            allowNull : false,
-        },
         payment_id : {
-            type : DataTypes.CHAR,
-            allowNull : false,
-        },
-        payment_state : {
             type : DataTypes.CHAR,
             allowNull : false,
         },
         Id_delivery_address: {
             type: DataTypes.UUID,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: addressSchema,
                 key: 'Id_address',
-            },
+            }, 
+        },
+        pickup_location : {
+            type: DataTypes.CHAR,
+            allowNull: true,
+        },
+        pickup_location_name : {
+            type: DataTypes.CHAR,
+            allowNull: true,
         },
         Id_billing_address: {
             type: DataTypes.UUID,
@@ -59,6 +65,14 @@ const orderSchema = db.define(
             references: {
                 model: addressSchema,
                 key: 'Id_address',
+            },
+        },
+        Id_delivery_method: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: deliveryMethodSchema,
+                key: 'Id_delivery_method',
             },
         },
         created_by : {

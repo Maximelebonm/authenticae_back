@@ -19,6 +19,15 @@ const userSchema = db.define(
             type: DataTypes.STRING,
             allowNull: true
         },
+        customer_no : {
+            type : DataTypes.CHAR(9),
+            allowNull : false,
+            unique : true,
+        },
+        gender : {
+            type : DataTypes.CHAR,
+            allowNull : false,
+        },
         firstname : {
             type : DataTypes.CHAR,
             allowNull : false,

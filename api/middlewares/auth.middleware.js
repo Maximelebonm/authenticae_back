@@ -34,6 +34,7 @@ const protect = asyncHandler(
                if(decoded){
                    const user = await userService.findOneUserByID(decoded.Id_user);
                    if(user)
+                    req.user = user;
                    next();
                }
                else {

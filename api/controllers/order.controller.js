@@ -121,6 +121,7 @@ const productOrderProduction =async(req,res)=>{
     try {
         const productUpdate = await orderservice.productOrderProduction(req.params.id)
         if(productUpdate[0] === 1){
+            // envoie mail au client
             const mail = await mailservice.mailProduction(req)
             if(mail.accepted){
                 res.send({message : 'produit pris en charge'})
@@ -138,7 +139,7 @@ const productOrderProduction =async(req,res)=>{
 const cancelProductOrderProduction =async(req,res)=>{
     try {
         const productUpdate = await orderservice.cancelProductOrderProduction(req.params.id)
-        if(productUpdate === 'ok'){
+        if(productUpdate[0] === 1){
             const mail = await mailservice.cancelmailProduction(req)
             if(mail.accepted){
                 res.send({message : 'prise en charge annulé'})

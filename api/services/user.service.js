@@ -7,6 +7,7 @@ const cartSchema = require('../schemas/cart.schema');
 const shopSchema = require('../schemas/shop.schema')
 const db = require('../configs/db.config');
 const addressSchema = require('../schemas/adress.schema');
+const { where, Op } = require('sequelize');
 
 const findAllUser = async ()=> {
     const userFinded = await userSchema.findAll( 
@@ -160,8 +161,10 @@ const findOneUserByID = async (id) => {
                     required : false,
                 }      
         ]})
+        console.log(user)
             return user
     } catch (error) {
+        console.error(error)
         return error
     }
 }
@@ -192,8 +195,30 @@ const createUser = async (req,password) => {
         //         created_by : 'user',
         //      },{ transaction: t });
         // }
+        function formatDate(date) {
+          const month = String(date.getMonth() + 1).padStart(2, '0'); // Mois (01-12)
+          const year = date.getFullYear(); // Année (YYYY)
+      
+          return `${month}${year}`;
+      }
+      
+      const currentDate = new Date();
+      const formattedDate = formatDate(currentDate);
+
+        const customerNo = await userSchema.findAll({
+            where: {
+                customer_no: {
+                    [Op.like]: `${formattedDate}%`
+                }
+            },
+        })
+        const customerNumber = customerNo.length + 1;
+
+        const smallClientnumber = `${formattedDate}${customerNumber}`;
 
         const userCreatedPromise = await userSchema.create({
+            gender : req.body.gender,
+            customer_no : smallClientnumber.toString(),
             firstname : req.body.firstname,
             lastname : req.body.lastname,
             birthdate : req.body.birthdate,
@@ -244,6 +269,7 @@ const createPseudo = async (req) => {
 const updateUser = async (req) => {
     try {
         const userUpdated = await userSchema.update({
+            title : req.body.title,
             firstname : req.body.firstname,
             lastname : req.body.lastname,
             birthdate : req.body.birthdate,

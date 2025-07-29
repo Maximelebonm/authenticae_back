@@ -3,7 +3,7 @@ if(process.env.NODE_ENV === "development"){
     cookieConfig = {
         sameSite:'none',
         secure : true,
-        maxAge : 864000000,
+        maxAge : 604800000,
     }
 } else {
     cookieConfig ={
@@ -12,7 +12,7 @@ if(process.env.NODE_ENV === "development"){
         sameSite:'none',
         secure : true,
         httpOnly: false,
-        maxAge : 864000000,
+        maxAge : 604800000,
     }
 }
 

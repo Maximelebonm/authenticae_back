@@ -3,8 +3,8 @@ require('dotenv').config()
 let mailerConfig;
 if(process.env.NODE_ENV === "development"){
     mailerConfig = {
-        host: "ethereal.risebuildings.com",
-        port: 5587,
+        host: 'smtp.ethereal.email',
+        port: 587,
         secure : false,
         tls: {
             rejectUnauthorized: true,

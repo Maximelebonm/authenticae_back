@@ -6,9 +6,9 @@ const mrController = require("../controllers/mr.controller");
 
 
 
-
-router.post("/test", protect,mrController.MrFirstRequest);
-router.get("/:id", );
+router.post("/createLabel", protect,mrController.MrCreateLabel);
+//router.post("/test", protect,mrController.MrFirstRequest);
+router.get("/:id", protect,mrController.MrGetLabel);
 
 
 module.exports = router

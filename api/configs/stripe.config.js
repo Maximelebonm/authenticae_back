@@ -5,7 +5,7 @@ let stripeClient;
 
 if (process.env.NODE_ENV === 'development') {
     stripeClient = stripe(process.env.STRIPE_TEST_SECRET);
-} else {
+} else if(process.env.NODE_ENV === 'production') {
     stripeClient = stripe(process.env.STRIPE_SECRET);
 }
 

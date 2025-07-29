@@ -11,6 +11,17 @@ router.get("/producer/:id" , orderController.getProducerOrder)
 router.get('/usercommands/:id', protect, orderController.getUserOrder);
 router.post('/producer/working_progress/:id', protect, orderController.cancelOrderInProgress);
 
+const handleTransaction = async (transaction, callback) => {
+  try {
+      const result = await callback();
+      await transaction.commit();
+      return result;
+  } catch (error) {
+      await transaction.rollback();
+      throw error;
+  }
+};
+
 router.post('/cancelpercent/:id', protect,async (req, res) => {
   let { percent,idpayement,refundAmount,productPrice} = req.body;
   const transaction = await db.transaction();
@@ -57,6 +68,8 @@ router.post('/cancelpercent/:id', protect,async (req, res) => {
 //   source: 'tok_bypassPending', // Carte de test spéciale
 // });
 // }
+
+// envoie du produit par le producteur
 router.post('/producer/send/:id', protect, async (req, res) => {
   let { IdPayement,stripe_ID,amountProduct} = req.body;
   const transaction = await db.transaction();
@@ -152,7 +165,7 @@ router.post('/stripe/cancel/:id', protect, async (req, res) => {
     try {
       const amountCents = amount * 100
       const refundCents = refund * 100
-      const amountTotal = amountCents - refundCents
+      const amountTotal = Math.round(amountCents - refundCents)
         // Création de l'intention de paiement
         if(amountTotal > 0){
           const refundStripe = await stripeClient.refunds.create({
@@ -213,9 +226,9 @@ router.post('/stripe/cancel/:id', protect, async (req, res) => {
       }
     }
 });
+
 router.post("/stripe/charge", protect, async (req, res) => {
   let { amount, id } = req.body;
-  console.log(amount, id);
   const transaction = await db.transaction();
   let payment
   try {
@@ -243,7 +256,11 @@ router.post("/stripe/charge", protect, async (req, res) => {
               });
             }
       } else {
-          throw new Error('Payment failed');
+           await stripeClient.paymentIntents.cancel(payment.id);
+        res.send({
+            message: "payment failed",
+            success: false,
+        });
         }
       } catch (error) {
         await stripeClient.paymentIntents.cancel(payment.id);
@@ -254,7 +271,10 @@ router.post("/stripe/charge", protect, async (req, res) => {
   }
 });
 
-router.post('/producer/accepted/:id', protect, orderController.productOrderProduction)
+// Prise en charge d'une commande par un producteur
+router.post('/producer/accepted/:id', protect, orderController.productOrderProduction);
+
+// Annulation de prise en charge par un producteur (erreur de la part du producteur)
 router.post('/producer/cancelAccepted/:id', protect, orderController.cancelProductOrderProduction)
 router.post('/producer/cancelsend/:id', protect, orderController.cancelProductOrderSend)
 

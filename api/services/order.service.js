@@ -13,11 +13,16 @@ const db = require('../configs/db.config');
 const subOptionSchema = require('../schemas/subOption.schema');
 const shopSchema = require('../schemas/shop.schema');
 const addressSchema = require('../schemas/adress.schema');
-const { Op } = require('sequelize');
+const deliveryMethod = require('../schemas/deliveryMethod.schema');
+const orderStateSchema = require('../schemas/orderstate.schema');
+const orderProductStateSchema = require('../schemas/orderProductState.schema');
+
+const { Op, or } = require('sequelize');
+const { get } = require('https');
 
 const createOrder = async (req,idStripe) => {
     const t = await db.transaction();
-    const { cart, products, user,address_billing,address_delivery } = req.body;
+    const { cart, products, user,address_billing,address_delivery,livraisonMode } = req.body;
     
     try {
         const options = {
@@ -49,16 +54,32 @@ const createOrder = async (req,idStripe) => {
             const numberOfOrderOftheDay = (factureGeted.length +1).toString()
             numberFacture = formattedDate + numberOfOrderOftheDay
         }
+
+        const getOrderState = await orderStateSchema.findOne({
+            where: { name: 'Pay' },
+            attributes: ['Id_order_state'],
+        });
+
+        const getDeliveryMethod = await deliveryMethod.findOne({
+            where: { name: livraisonMode },
+            attributes: ['Id_delivery_method'],
+        });
+
+        const getOrderProductState = await orderProductStateSchema.findOne({
+            where: { name: 'paid' },
+            attributes: ['Id_order_product_state'],
+        });
         // Créer la commande principale
         const createOrder = await orderSchema.create({
-            order_state: "Pay",
+            Id_order_state: getOrderState.Id_order_state,
             price: cart.price,
-            order_delivery: 'En attente',
             payment_id : idStripe,
-            payment_state : 'success',
-            number_facture : numberFacture,
-            Id_delivery_address: address_delivery.Id_address,
+            number_facture : numberFacture, 
+            Id_delivery_address: livraisonMode == 'domicile' ? address_delivery.Id_address : null,
+            pickup_location : livraisonMode == 'Mondial Relay' ? address_delivery.ParcelShopID : null,
+            pickup_location_name : livraisonMode == 'Mondial Relay' ? address_delivery.Nom : null,
             Id_billing_address: address_billing.Id_address,
+            Id_delivery_method: getDeliveryMethod.Id_delivery_method,
             Id_user: cart.Id_user,
             created_by: 'user',
         }, { transaction: t });
@@ -67,7 +88,7 @@ const createOrder = async (req,idStripe) => {
         const orderProductPromises = products.map(async (element) => {
             const createOrderProduct = await orderProductSchema.create({
                 price: element.price,
-                order_state: 'wait',
+                Id_order_product_state: getOrderProductState.Id_order_product_state,
                 quantity: element.quantity,
                 Id_order: createOrder.Id_order,
                 Id_product: element.Id_product,
@@ -128,6 +149,25 @@ const createOrder = async (req,idStripe) => {
     }
     
 }
+
+// mise a jours avec l'étiquette générée par mondial relay
+const labelUpdated = async (id, data) => {
+    try {
+        const orderUpdated = await orderProductSchema.update({
+            label_number: data.sendingNumber,
+            label_link: data.etiquetteLink,
+            updated_by: 'user',
+            updated_date: Date.now(),
+        },{
+            where: { Id_order_product: id },
+        });
+        return orderUpdated;
+    } catch (error) {
+        return error;
+    }
+}
+
+
 const addPdfStorage = async (store,id)=>{
     try {
         const orderProductUpdate = await orderSchema.update({
@@ -239,7 +279,8 @@ const getOrderByIdOrder = async(id)=>{
             include : [{
                 model : orderProductSchema,
                 required : true,
-                include : [{
+                include : [
+                    {
                         model : orderProductOptionSchema,
                         required : false,
                         include : [{
@@ -249,7 +290,8 @@ const getOrderByIdOrder = async(id)=>{
                             model : subOptionSchema,
                             attributes : ['detail'],
                         }],
-                    },{
+                    },
+                    {
                         model : orderPersonalizationschema,
                         required : false,
                         attributes : ['consumer_text','price'],
@@ -271,10 +313,11 @@ const getOrderByIdOrder = async(id)=>{
                             where : {order : 0}
                         }]
                 }],
-            },{
-                model : userSchema,
-                attributes : ['firstname','lastname','email']
-            }],
+                },{
+                    model : userSchema,
+                    attributes : ['firstname','lastname','email']
+                },
+            ],
         })
             return orderFinded   
     } catch (error) {
@@ -300,6 +343,9 @@ const getUserOrder = async(id)=>{
                             attributes : ['detail'],
                         }],
                     },{
+                        model : orderProductStateSchema,
+                                attributes : ['name'],
+                    },{
                         model : orderPersonalizationschema,
                         attributes : ['consumer_text','price'],
                         include : [{
@@ -323,6 +369,9 @@ const getUserOrder = async(id)=>{
             },{
                 model : userSchema,
                 attributes : ['firstname','lastname','email']
+            },{
+                    model : orderStateSchema,
+                       attributes : ['name'],
             }],
         })
             return orderFinded   
@@ -390,6 +439,9 @@ const findProducerOrder = async(id)=> {
                             attributes : ['detail'],
                         }],
                     },{
+                        model : orderProductStateSchema,
+                                attributes : ['name'],
+                    },{
                         model : orderPersonalizationschema,
                         attributes : ['consumer_text','price'],
                         include : [{
@@ -414,12 +466,18 @@ const findProducerOrder = async(id)=> {
                 }],
             },{
                 model : userSchema,
-                attributes : ['email','firstname','lastname'],
+                attributes : ['email','firstname','lastname', 'Id_user','phone'],
             },{
                 model : addressSchema,
                 as : 'DeliveryAddress',
                 attributes : ['city','cityCode','country','additional','street','number'],
-            }],
+            },{
+                    model : deliveryMethod,
+                     attributes : ['name'],
+            },{
+                    model : orderStateSchema,
+            },
+        ],
         })
             return orderFinded   
     } catch (error) {
@@ -427,10 +485,15 @@ const findProducerOrder = async(id)=> {
     }
 }
 
+//Prise en charge d'un produit par un producteur
 const productOrderProduction = async(id)=>{
     try {
+        const orderProductState = await orderProductStateSchema.findOne({
+            where : {name : 'processing'},
+            attributes : ['Id_order_product_state'],
+        })
         const orderProductUpdate = await orderProductSchema.update({
-            order_state : 'production',
+            Id_order_product_state : orderProductState.Id_order_product_state,
             updated_by : 'producteur',
             updated_date : Date.now()
         },{
@@ -438,25 +501,27 @@ const productOrderProduction = async(id)=>{
         })
         return orderProductUpdate
     }catch (err){
-        console.log(err)
         return err
     }
 }
 
+//Annulation de prise en charge par un producteur (erreur de la part du producteur)
 const cancelProductOrderProduction = async(id)=>{
     try {
+        const orderProductState = await orderProductStateSchema.findOne({
+            where : {name : 'paid'},
+            attributes : ['Id_order_product_state'],
+        })
         const orderProductUpdate = await orderProductSchema.update({
-            order_state : 'wait',
-            updated_by : 'producteur',
-            updated_date : Date.now()
+                  Id_order_product_state : orderProductState.Id_order_product_state,
+                  updated_by : 'producteur',
+                  updated_date : Date.now()
         },{
             where : {Id_order_product : id},
-            returning: true,
             })
-         return 'ok'
+         return orderProductUpdate
 
     }catch (err){
-        console.log(err)
         return err
     }
 }
@@ -536,5 +601,6 @@ module.exports = {
     cancelOrderInProgress,
     cancelOrderPercent,
     addPdfStorage,
-    getOrderByIdOrder
+    getOrderByIdOrder,
+    labelUpdated,
 }

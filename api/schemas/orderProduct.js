@@ -1,6 +1,8 @@
 const {Sequelize, DataTypes} = require('sequelize');
 const db = require("../configs/db.config");
 
+const orderproductStateSchema = require('./orderProductState.schema');
+
 const orderProduct = db.define('orderproduct',{
     Id_order_product: {
         type: DataTypes.UUID,
@@ -9,14 +11,26 @@ const orderProduct = db.define('orderproduct',{
         defaultValue : Sequelize.UUIDV4,
         unique : true,
     },
+    Id_order_product_state: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: orderproductStateSchema,
+                key: 'Id_order_product_state',
+            },
+        },
     price : {
         type : DataTypes.FLOAT,
         allowNull : false,
         defaultValue : 0,
     },
-    order_state : {
+    label_link : {
         type : DataTypes.CHAR,
-        allowNull : false,
+         allowNull : true,
+    },
+    label_number : {
+        type : DataTypes.CHAR,
+        allowNull : true,
     },
     working_progress : {
         type : DataTypes.INTEGER,

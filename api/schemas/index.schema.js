@@ -20,18 +20,20 @@ const tvaSchema = require('./tva.schema');
 
 const claimSchema = require('./claim.schema');
 
-
 const cartSchema = require('./cart.schema');
 const cartProductschema = require('./cartProduct.schema');
 const cartProductOptionSchema = require('./cartProductOption.schema')
 const cartProductPersonalization = require('./cartProductPersonalization.schema')
 
 const orderSchema = require('./order.schema');
+const orderStateSchema = require('./orderstate.schema');
+const deliveryMethodSchema = require('./deliveryMethod.schema');
 const orderProductschema = require('./orderProduct');
+const orderProductStateSchema = require('./orderProductState.schema');
 const orderProductOptionSchema = require('./orderProductOption.schema');
 const orderProductPersonalizationSchema = require('./orderProductPersonalization.schema')
 
-db.sync()
+
 // *** RELATIONS ORDER ***//
 // relation de adress
 adressSchema.hasMany(orderSchema, {foreignKey: 'Id_delivery_address'})
@@ -43,9 +45,15 @@ orderSchema.belongsTo(userSchema, {foreignKey: 'Id_user'});
 orderSchema.hasMany(orderProductschema, {foreignKey : 'Id_order'});
 orderSchema.belongsTo(adressSchema, { as: 'DeliveryAddress', foreignKey: 'Id_delivery_address' });
 orderSchema.belongsTo(adressSchema, { as: 'BillingAddress', foreignKey: 'Id_billing_address' });
+orderSchema.belongsTo(deliveryMethodSchema, {foreignKey: 'Id_delivery_method'});
+orderSchema.belongsTo(orderStateSchema, {foreignKey: 'Id_order_state'});
+orderStateSchema.hasMany(orderSchema, {foreignKey: 'Id_order_state'});
+deliveryMethodSchema.hasMany(orderSchema, {foreignKey: 'Id_delivery_method'});
 
 //relation de orderProduct
 orderProductschema.belongsTo(orderSchema, {foreignKey : 'Id_order'});
+orderProductschema.belongsTo(orderProductStateSchema, {foreignKey: 'Id_order_product_state'});
+orderProductStateSchema.hasMany(orderProductschema, {foreignKey: 'Id_order_product_state'});
 orderProductschema.belongsTo(productSchema, { foreignKey: 'Id_product'});
 orderProductschema.hasMany(orderProductOptionSchema,{foreignKey: 'Id_order_product'});
 orderProductschema.hasMany(orderProductPersonalizationSchema,{foreignKey: 'Id_order_product'});
@@ -137,3 +145,5 @@ adressSchema.belongsTo(userSchema, { foreignKey: 'Id_user' });
 
 //relation claim (reclamation)
 claimSchema.belongsTo(userSchema,{foreignKey : 'Id_user'});
+
+db.sync()

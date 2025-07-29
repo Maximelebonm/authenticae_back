@@ -13,8 +13,8 @@ const parseCookies = (cookieHeader) => {
 
 const jwtsecurity = (props) => {
     try {
-        const {Id_user,email,roles,name,firstname,created_by,identifiant} =props
-        const payload = {Id_user : Id_user, email : email, firstname : firstname,role : roles, created_by : created_by, identifiant : identifiant};
+        const {Id_user,email,roles,name,firstname,addresses,created_by,gender} = props
+        const payload = {Id_user : Id_user, email : email, firstname : firstname,role : roles,addresses : addresses, created_by : created_by, gender : gender};
         console.log('payload : ', payload)
         return jwt.sign(payload, process.env.JWT_SECRET)
         
@@ -36,18 +36,18 @@ const jwtCart = (props) => {
 }
 
 const jwtsecurityValidEmail = (props) => {
-    const {Id_user,email,roles,firstname,lastname,birthdate,phone,password,created_by,identifiant} =props
+    const {Id_user,email,roles,firstname,lastname,birthdate,phone,password,created_by,gender} =props
     const payload = {
         Id_user : Id_user,
         email : email, 
         role : roles,
         firstname : firstname,
         lastname : lastname,
+        gender : gender,
         birthdate : birthdate,
         phone : phone,
         password : password,
         created_by : created_by,
-        identifiant : identifiant
     };
     return jwt.sign(payload, process.env.JWT_SECRET)
 }

@@ -55,7 +55,11 @@ const findUserByID = async (req,res)=>{
     try {
         if(req.user){
             const findUser = await userService.findOneUserByID(req.user.Id_user)
-            return findUser
+            if(findUser){
+                res.status(200).send(findUser)
+            } else {
+                res.status(404).send({message : "utilisateur n'existe pas", data : findUser})
+            }
         } else {
             const response = await userService.findOneUserByID(req.params.id)
             if(response){
@@ -78,7 +82,6 @@ const emailValidation = async(req,res)=>{
         } else {
             const token = security.jwtsecurityValidEmail(req.body)
             const validationEmail = await mailService.mailvalidation(req,token)
-            console.log(validationEmail)
             res.send({message : 'email envoyé'})
         }
     } catch (error) {
@@ -162,7 +165,6 @@ const updateUser = async (req, res) => {
 const renewPassword = async (req, res) => {
     try {
         const userExist = await userService.findOneUserByEmail(req.body.email);
-    
         if(userExist && userExist.email){
             const password = await security.hashPassword(req.body.password);
             const updatePassword = await userService.renewPassword(password,userExist.Id_user)

@@ -56,6 +56,6 @@ const initData = async ()=> {
     } catch (err) {
         return err
     }
-}
+} 
 
 module.exports = initData;
